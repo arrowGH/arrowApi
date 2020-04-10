@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="17c1706c-1b36-42d0-85d5-c1e9593213eb" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="createacctFlow" doc:id="57716912-d3d3-4cda-9f04-7977ee1dd75f" >
+		<http:listener doc:name="Listener" doc:id="a9b27702-b9d5-45e1-94c2-2cbf2fbc100b" config-ref="HTTP_Listener_config" path="/CreateAcct"/>
+		<set-payload value="Success1" doc:name="Set Payload" doc:id="40574c01-5c9c-43e2-b03d-147b17e97016" />
+		<logger level="INFO" doc:name="Logger" doc:id="9646f442-e528-4e8f-b53d-67e87c9e32b6" message="Logger1 info"/>
+		<flow-ref doc:name="Flow Reference" doc:id="5aca0b69-0556-4f7a-8974-25300846287c" name="createacctFlow1"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7a8194b5-5db9-4cff-8a84-f9851966e3d5" message="success3 logger...#[payload]"/>
+	</flow>
+	<flow name="createacctFlow1" doc:id="683ee908-aea1-4978-81a3-020bddaf0e1b" >
+		<set-payload value="setpayload success2" doc:name="Set Payload" doc:id="bc4aa1d6-c566-492e-aa74-6f3d1e3a30b3" />
+		<logger level="INFO" doc:name="Logger" doc:id="b3b2c67f-3f56-408f-9e96-4d2db7c2da4d" message="createflow1logger"/>
+	</flow>
+</mule>
