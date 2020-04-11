@@ -17,5 +17,6 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<flow name="createacctFlow1" doc:id="683ee908-aea1-4978-81a3-020bddaf0e1b" >
 		<set-payload value="setpayload success2" doc:name="Set Payload" doc:id="bc4aa1d6-c566-492e-aa74-6f3d1e3a30b3" />
 		<logger level="INFO" doc:name="Logger" doc:id="b3b2c67f-3f56-408f-9e96-4d2db7c2da4d" message="createflow1logger"/>
+		<logger level="INFO" doc:name="Logger" doc:id="cb5a72e8-82b2-4023-ac47-4183417185c4" message="added part of github import test"/>
 	</flow>
 </mule>
