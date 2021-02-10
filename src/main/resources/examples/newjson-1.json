@@ -1,0 +1,19 @@
+[
+  {
+    "Id": 400,
+    "name": "sunny",
+    "sal": "5000",
+    "address": "india",
+    "phone": "123456789",
+    "mailid": "test@hotmail.com"
+  },
+  {
+    "Id": 501,
+    "name": "sunny",
+    "sal": "5000",
+    "address": "india",
+    "phone": "123456789",
+    "mailid": "test@hotmail.com"
+  }
+  
+]

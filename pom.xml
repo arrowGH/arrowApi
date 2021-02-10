@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mycompany</groupId>
-	<artifactId>insertdb</artifactId>
+	<artifactId>bulkinsert</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>mule-application</packaging>
 
-	<name>insertdb</name>
+	<name>bulkinsert</name>
 
     <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,15 +24,15 @@
 				<artifactId>mule-maven-plugin</artifactId>
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
-            <configuration>
-                    <sharedLibraries>
+				<configuration>
+				<sharedLibraries>
                         <sharedLibrary>
                             <groupId>com.mycompany</groupId>
                             <artifactId>ojdbc6</artifactId>
                         </sharedLibrary>
                     </sharedLibraries>
                 </configuration>
-            </plugin>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -50,6 +50,12 @@
             <classifier>mule-plugin</classifier>
         </dependency>
 		<dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-file-connector</artifactId>
+            <version>1.3.2</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
             <groupId>org.mule.connectors</groupId>
             <artifactId>mule-db-connector</artifactId>
             <version>1.5.5</version>

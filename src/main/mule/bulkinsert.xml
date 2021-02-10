@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="ec1bf682-e763-41b0-b36f-fadf58b758f7" >
+		<file:connection workingDir="D:\" />
+	</file:config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="a67fc029-3875-421b-896f-42113845b040" >
+		<db:oracle-connection host="localhost" user="ganesha" password="123" instance="orcl" />
+	</db:config>
+	<flow name="bulkinsertFlow" doc:id="1cc73025-e9c4-4820-9fff-9b9f6faa9c5a" >
+		<scheduler doc:name="Scheduler" doc:id="854ed4d0-07c4-4c1d-affd-18a354b7b191" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="5000"/>
+			</scheduling-strategy>
+		</scheduler>
+		<file:read doc:name="Read" doc:id="071d238f-aee1-43d2-bfcd-0d4230e5bc85" config-ref="File_Config" path="D:\inputbatch\empmaster.csv"/>
+		<ee:transform doc:name="Transform Message" doc:id="b27ea349-50f7-4b88-bfe1-d6c92e01d099" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-insert doc:name="Bulk insert" doc:id="e32df70a-be51-4d7c-b1d5-2e06b92919a0" config-ref="Database_Config">
+			<db:sql >insert into emp_master (EMP_ID,EMP_NAME,EMP_SAL,EMP_ADDRESS,EMP_PHONE,EMP_EMAIL) VALUES (:EMP_ID,:EMP_NAME,:EMP_SAL,:EMP_ADDRESS,:EMP_PHONE,:EMP_MAIL)</db:sql>
+		</db:bulk-insert>
+		<logger level="INFO" doc:name="Logger" doc:id="370f4fcd-25c9-4615-895d-97fa92a2179b" />
+	</flow>
+</mule>

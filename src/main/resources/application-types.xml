@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="empmaster" format="csv">
+      <types:shape format="weave" example="examples/empmaster.csv"><![CDATA[%dw 2.0
+
+type empmaster = Array<{|  Id: Number,   name: String,   sal: String,   address: String,   phone: String,   mailid: String|}>
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="true"/>
+        <types:property name="isQuotedString" value="false"/>
+        <types:property name="separator" value=","/>
+      </types:properties>
+    </types:type>
+    <types:type name="data" format="json">
+      <types:shape format="weave" example="examples/empmaster.json"><![CDATA[%dw 2.0
+
+type data = Array<{|  Id: Number {"typeId": "int"},   name: String,   sal: Number {"typeId": "int"},   address: String,   phone: Number {"typeId": "int"},   mailid: String|}> {"example": "[{\\\"Id\\\":100,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":101,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":102,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":103,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":104,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":105,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":106,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":107,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":108,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":109,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":110,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":111,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":112,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":113,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":114,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":115,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":116,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":117,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":118,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":119,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"},{\\\"Id\\\":200,\\\"name\\\":\\\"sunny\\\",\\\"sal\\\":5000,\\\"address\\\":\\\"india\\\",\\\"phone\\\":123456789,\\\"mailid\\\":\\\"test@hotmail.com\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#b27ea349-50f7-4b88-bfe1-d6c92e01d099">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="empmaster"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="data"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
