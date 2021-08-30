@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="5ee44800-1c65-4365-a2f4-24926c526c92" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="e40c2b32-9975-4c2f-b87d-6388b4e69eac" >
+		<file:connection workingDir="E:\tmani\input" />
+	</file:config>
+	
+	<flow name="batchprocessing_tmaniFlow" doc:id="3ae91a46-ef86-4676-a04a-73c892a6358b" >
+		<file:listener doc:name="On New or Updated File" doc:id="934ee45d-cc3e-4b3d-b2eb-e0edca42faa3" config-ref="File_Config" moveToDirectory="E:\tmani\outfile" directory="E:\\tmani\\input" watermarkMode="MODIFIED_TIMESTAMP" outputMimeType="application/csv">
+			<scheduling-strategy >
+				<fixed-frequency frequency="5000"/>
+			</scheduling-strategy>
+		</file:listener>
+		<ee:transform doc:name="Transform Message" doc:id="7d852137-a1de-494c-acee-bdef74b0826e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload groupBy $.OrderId pluck $
+	
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="16458e2f-d0ee-4638-973a-acc28b492705" message="#[payload]"/>
+		<batch:job jobName="batchprocessing_tmaniBatch_Job" doc:id="51c3812f-5646-4214-9287-903ab0c4a939" blockSize="10" maxFailedRecords="1">
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="9ff18e91-13f7-4412-a1d5-16ae4bdd8bea" >
+					<logger level="INFO" doc:name="Logger" doc:id="67e35204-3665-461c-82fc-6bc17c3475c7" message="#[payload]"/>
+					<ee:transform doc:name="Transform Message" doc:id="9609ecf2-299a-4666-a8df-7948d2bb938b" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	order:
+	{
+		orderid: payload[0].OrderId,
+		items: sizeOf(payload),
+		errorQty: payload[0].QTY/2.0
+		
+	}
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<set-variable value="#[payload]" doc:name="Set Variable" doc:id="91446450-705e-42aa-8b98-eca116987fc8" variableName="orderpayloadbeforeinsert"/>
+					<db:insert doc:name="Insert" doc:id="0d694eda-7767-4247-833d-19c087ffe150" config-ref="Database_Config">
+						<db:sql >INSERT INTO ORDERS VALUES (:orderid, :items)</db:sql>
+						<db:input-parameters ><![CDATA[#[{"orderid": payload.order.orderid, "items": payload.order.items}]]]></db:input-parameters>
+					</db:insert>
+					<set-payload value="#[vars.orderpayloadbeforeinsert]" doc:name="Set Payload" doc:id="d44af8ee-93c4-40db-a6cc-3b9eaf961ed6" mimeType="application/json"/>
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="6cff6b40-8229-4311-a154-f5d97b94b816" size="5">
+						<logger level="INFO" doc:name="Logger" doc:id="dbb558c4-1dfd-45c8-9cdb-a7b6a0d07dff" message="#[payload]"/>
+					</batch:aggregator>
+				</batch:step>
+				<batch:step name="failedrecordprocessing" doc:id="42e3e0fc-3173-43c6-a015-83435e524e62" acceptPolicy="ONLY_FAILURES">
+					<logger level="INFO" doc:name="Logger" doc:id="3cd1d6c5-242f-42da-95b8-8e5d77802c45" message="@@@@@@@@@@failedrecord = #[payload]"/>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="b8e71ae1-5343-44b8-8dd5-b6d1865d7355" />
+				<db:insert doc:name="Insert" doc:id="bf08c8f6-ac8b-4147-acfb-8d1c005950fe" config-ref="Database_Config">
+					<db:sql >INSERT INTO order_proc_status (BATCHID,TOTALRECORDS,SUCCESSRECORDS,FAILEDRECORDS) 
+VALUES(:BATCHID, :TOTALRECORDS, :SUCCESSRECORDS, :FAILEDRECORDS)</db:sql>
+					<db:input-parameters ><![CDATA[#[{BATCHID: payload.batchJobInstanceId,
+	TOTALRECORDS: payload.totalRecords,
+	SUCCESSRECORDS: payload.successfulRecords,
+	FAILEDRECORDS: payload.failedRecords
+	
+}]]]></db:input-parameters>
+				</db:insert>
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+</mule>

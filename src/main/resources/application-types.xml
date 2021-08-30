@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="order" format="csv">
+      <types:shape format="weave" example="examples/Ord-2.csv"><![CDATA[%dw 2.0
+
+type order = Array<{|  SNO: String,   OrderId: String,   SKU: String,   QTY: String,   PRICE: String,   CustomerID: String|}>
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="true"/>
+        <types:property name="isQuotedString" value="false"/>
+        <types:property name="separator" value=","/>
+      </types:properties>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#bed452c1-bc15-4f83-8414-19887fa75f1f">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="order"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

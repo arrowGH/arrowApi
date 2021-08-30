@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+<db:config name="Database_Config" doc:name="Database Config" doc:id="7c0afa63-de7a-4025-9da0-fe47bf2c0c9e" >
+<db:oracle-connection host="${db.host}" user="${db.user}" password="${db.password}" instance="${db.instance}" port="${db.port}"/>
+</db:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="cde4483b-a319-4b8f-b4d8-43e947458ce4" file="properties\dev.yaml" />
+
+</mule>

@@ -1,0 +1,6 @@
+db:
+  host: "localhost"
+  port: "1521"
+  user: "ganesha"
+  password: "12345"
+  instance : "orcl"
